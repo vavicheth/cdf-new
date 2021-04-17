@@ -1,0 +1,7 @@
+1. Plugin css and js
+2. Create Route view and save pdf
+3. Create function view and save pdf in Controller
+4. Create Directors role and edit on Gate AuthServiceProvider
+5. Change role directors on director user
+4. Edit show document blade file
+5. Create edit_pdf blade file
