@@ -24,6 +24,7 @@
         "laravelcollective/html": "^6.2",
         "livewire/livewire": "^2.3",
         "maatwebsite/excel": "^3.1",
+        "mikehaertl/php-pdftk": "^0.10.0",
         "mpdf/mpdf": "^8.0",
         "niklasravnsborg/laravel-pdf": "^4.0",
         "nuovo/spreadsheet-reader": "^0.5.11",

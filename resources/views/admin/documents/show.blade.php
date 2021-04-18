@@ -106,9 +106,23 @@
                         </th>
                         <td>
                             @foreach($document->document_file as $key => $media)
-                                <a href="{{ $media->getUrl() }}" target="_blank">
-                                    {{ $media->name }} ({{ $media->size }} KB)<br>
-                                </a>
+                                <div class="row ml-2">
+                                    <a href="{{ $media->getUrl() }}" target="_blank">
+                                        {{ $media->name }} ({{ ($media->size)/1000 }} KB)<br>
+                                    </a>
+                                    <form method="POST" action="{{ route("admin.documents.annotations.index") }}" enctype="multipart/form-data">
+                                        @csrf
+
+                                        <input type="hidden" name="media_id" value="{{$media->id}}">
+                                        <input type="hidden" name="document_id" value="{{$document->id}}">
+
+                                        <div class="form-group ml-2">
+                                            <button class="btn btn-xs btn-success" type="submit">
+                                                <i class="fa-fw nav-icon far fa-edit"></i> Writing
+                                            </button>
+                                        </div>
+                                    </form>
+                                </div>
                             @endforeach
                         </td>
                     </tr>

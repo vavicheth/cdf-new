@@ -98,6 +98,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('document-types', 'DocumentTypeController');
 
     // Documents
+    Route::post('documents/annotations/index', 'DocumentController@view_pdf')->name('documents.annotations.index');
+    Route::post('documents/annotations', 'DocumentController@save_pdf')->name('documents.save_pdf');
+
     Route::delete('documents/destroy', 'DocumentController@massDestroy')->name('documents.massDestroy');
     Route::post('documents/media', 'DocumentController@storeMedia')->name('documents.storeMedia');
     Route::post('documents/ckmedia', 'DocumentController@storeCKEditorImages')->name('documents.storeCKEditorImages');

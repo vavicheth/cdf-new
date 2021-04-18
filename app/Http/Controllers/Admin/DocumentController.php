@@ -423,5 +423,58 @@ class DocumentController extends Controller
     }
 
 
+    public function view_pdf(Request $request)
+    {
+        $media=Media::findOrFail($request->media_id);
+        $document=Document::findOrFail($request->document_id);
+
+        return view('admin.documents.annotations.index',compact('media','document'));
+    }
+
+    public function save_pdf(Request $request)
+    {
+        $file=$request->file('pdf');
+        $file->move(storage_path('tmp/uploads/'),$file->getClientOriginalName());
+
+        $pdf = new \mikehaertl\pdftk\Pdf(storage_path('tmp/uploads/file.pdf'));
+        $pdf->compress('compress')->saveAs('public/new.pdf');
+
+        return $request->pdf->getClientOriginalName();
+        if ($request->hasFile('pdf')) {
+
+            $file = $request->file('pdf');
+            Storage::put($request->media_id . '/' . $request->media_file, (string)file_get_contents($file), 'public');
+
+            //Show approved when DG comment
+            if (auth()->id() == 28) {
+                $document = Document::findOrFail($request->document_id);
+                $document->update(['submit' => '2']);
+            }
+
+            return response('Successful blog save to file!');
+        }
+        return 'End section';
+
+
+
+
+//        $path = storage_path('tmp/uploads');
+//        try {
+//            if (!file_exists($path)) {
+//                mkdir($path, 0755, true);
+//            }
+//        } catch (\Exception $e) {
+//        }
+////        $file = $request->file('file');
+//        $name = 'By_DG_test.pdf';//. trim($file->getClientOriginalName());
+////        $file->move($path, $name);
+//        file_put_contents($path.'/'.$name,$request->file('file'));
+//
+//        $document=Document::findOrFail($request->document_id);
+//        $document->addMedia(storage_path('tmp/uploads/' . $name))->toMediaCollection('document_file');
+//
+//        return view('admin.documents.annotations.index');
+    }
+
 
 }
