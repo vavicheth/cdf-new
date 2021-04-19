@@ -38,7 +38,7 @@
                 </li>
                 @can('document_access')
                     <li class="nav-item">
-                        <a href="{{ route("admin.documents.index") }}" class="nav-link {{ request()->is("admin/documents") || request()->is("admin/documents/*") ? "active" : "" }}">
+                        <a href="{{ route("admin.documents.index").'?active=1' }}" class="nav-link {{ request()->is("admin/documents") || request()->is("admin/documents/*") ? "active" : "" }}">
                             <i class="fa-fw nav-icon far fa-file-alt">
 
                             </i>

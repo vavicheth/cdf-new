@@ -230,7 +230,7 @@ PDFAnnotate.prototype.savePdf = function (fileName) {
 	})
 }
 
-PDFAnnotate.prototype.savePdfToServer = function ()  {
+PDFAnnotate.prototype.savePdfToServer = function (filename)  {
     var inst = this;
     var doc = new jspdf.jsPDF();
     $.each(inst.fabricObjects, function (index, fabricObj) {
@@ -241,7 +241,7 @@ PDFAnnotate.prototype.savePdfToServer = function ()  {
         doc.addImage(fabricObj.toDataURL(), 'png', 0, 0);
     });
 
-    var file = new File([doc.output('blob')], 'file.pdf', { type: "application/pdf"});
+    var file = new File([doc.output('blob')], filename, { type: "application/pdf"});
     // var formData = new FormData();
     // formData.append('pdf', file);
     //

@@ -10,10 +10,12 @@
         .title1 {font-family: Khmerosmoullight; font-size: 16px; }
         .title2 {font-family: Khmerosmoullight; font-size: 14px;}
         .title3 {font-family: Khmerosmoul; font-size:13px; font-style: normal}
-        .content {font-family: khmerosbattambang; font-size: 13px;}
-        .content_table {font-family: khmerosbattambang; font-size: 13px;}
+        .content {font-family: khmerosbattambang; font-size: 14px;}
+        .content_table {font-family: khmerosbattambang; font-size: 14px;}
         p{
-            font-family: khmerosbattambang; font-size: 13px;
+            font-family: khmerosbattambang; font-size: 14px;
+            line-height: 5px;
+            /*margin: 10px 0;*/
         }
         .right {
             float: right;
@@ -32,12 +34,13 @@
 {{--        </div>--}}
     </div>
 
-    <div style="float: right; width: 50%">
-        <span class='content'><b>លិខិតលេខៈ </b> {{$document->letter_code}}</span><br>
-        <span class='content'><b>លេខលិខិតចូលៈ </b> {{$document->code_in}}</span><br>
-        <span class='content'><b>លេខសំគាល់ឯកសារៈ </b> {{$document->document_code}}</span><br>
-        <span class='content'><b>ចុះថ្ងៃទីៈ </b> {{$document->created_at->format('d-M-Y H:i:s')}}</span><br>
-        <span class='content'><b>អ្នកបញ្ចូលលិខិតៈ </b>{{$document->creator->staff ? (($document->creator->staff->title ? $document->creator->staff->title->name_kh : '') . ' ' . $document->creator->staff->name_kh) : $document->creator->name}}</span><br>
+<div style="width: 100%">
+    <div style="float: right; width: 40%">
+        <span class='content'>លិខិតលេខៈ {{$document->letter_code}}</span><br>
+        <span class='content'>លេខលិខិតចូលៈ {{$document->code_in}}</span><br>
+        <span class='content'>លេខសំគាល់ឯកសារៈ {{$document->document_code}}</span><br>
+        <span class='content'>ចុះថ្ងៃទីៈ {{\KhmerDateTime\KhmerDateTime::parse($document->created_at)->format("LLT")}}</span><br>
+        <span class='content'>អ្នកបញ្ចូលលិខិតៈ {{$document->creator->staff ? (($document->creator->staff->title ? $document->creator->staff->title->name_kh : '') . ' ' . $document->creator->staff->name_kh) : $document->creator->name}}</span><br>
     </div>
 
     <div id="logo" style="float: left;" >
@@ -47,6 +50,7 @@
             <img class="ml-2" src="{{base_path().'/public/photos/Logo_Calmette_BW.jpg'}}" height="120px" width="auto" /><br>
         </div>
     </div>
+</div>
 <br>
 
     <div class="pull-right">
@@ -63,12 +67,18 @@
 
 @foreach($users as $user)
     @foreach($user->comments as $comment)
-    <!-- Comment user in document -->
-        <div class="ml-5 mr-5 mb-3 mt-2">
-            <span class='title2 float-left'>{{$user->staff ? ($user->staff->department ? ($user->staff->department->name_kh) : '') : ''}}: &nbsp; </span>
-            <span class='content float-left'><b>{{$user->staff ? (($user->staff->title ? $user->staff->title->name_kh : '') . ' ' . $user->staff->name_kh) : ''}}៖ </b></span>
-            <span  class='content right' style="float: right; width: 70%">{{$comment->updated_at->format('d-M-Y   H:i:s')}}</span><br>
-            <span style="font-family: khmerosbattambang">{!! $comment->comment !!}</span>
+        <!-- Comment user in document -->
+        <div style="margin-top: 10px">
+            <div style="float: right; width: 20%">
+                <span  class='content right' style="float: right; width: 70%"><i>{{$comment->updated_at->format('d-M-Y   H:i:s')}}</i></span><br>
+            </div>
+            <div style="width: 80%; ">
+                <span class='title2 float-left'>{{$user->staff ? ($user->staff->department ? ($user->staff->department->name_kh) : '') : ''}}: &nbsp; </span>
+                <span class='content float-left'><b>{{$user->staff ? (($user->staff->title ? $user->staff->title->name_kh : '') . ' ' . $user->staff->name_kh) : ''}}៖ </b></span>
+            </div>
+            <div style="margin-left: 20px">
+                <span style="font-family: khmerosbattambang;">{!! $comment->comment !!}</span>
+            </div>
         </div>
     @endforeach
 

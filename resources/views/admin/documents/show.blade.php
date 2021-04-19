@@ -110,18 +110,20 @@
                                     <a href="{{ $media->getUrl() }}" target="_blank">
                                         {{ $media->name }} ({{ ($media->size)/1000 }} KB)<br>
                                     </a>
-                                    <form method="POST" action="{{ route("admin.documents.annotations.index") }}" enctype="multipart/form-data">
-                                        @csrf
+                                    @can('annotation_access')
+                                        <form method="POST" action="{{ route("admin.documents.annotations.index") }}" enctype="multipart/form-data">
+                                            @csrf
 
-                                        <input type="hidden" name="media_id" value="{{$media->id}}">
-                                        <input type="hidden" name="document_id" value="{{$document->id}}">
+                                            <input type="hidden" name="media_id" value="{{$media->id}}">
+                                            <input type="hidden" name="document_id" value="{{$document->id}}">
 
-                                        <div class="form-group ml-2">
-                                            <button class="btn btn-xs btn-success" type="submit">
-                                                <i class="fa-fw nav-icon far fa-edit"></i> Writing
-                                            </button>
-                                        </div>
-                                    </form>
+                                            <div class="form-group ml-2">
+                                                <button class="btn btn-xs btn-success" type="submit">
+                                                    <i class="fa-fw nav-icon far fa-edit"></i> Writing
+                                                </button>
+                                            </div>
+                                        </form>
+                                    @endcan
                                 </div>
                             @endforeach
                         </td>

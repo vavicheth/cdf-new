@@ -1131,6 +1131,22 @@ class PermissionsTableSeeder extends Seeder
                 'updated_at' => '2021-02-04 23:00:46',
                 'deleted_at' => NULL,
             ),
+            139 => 
+            array (
+                'id' => 140,
+                'title' => 'annotation_access',
+                'created_at' => '2021-04-19 11:44:43',
+                'updated_at' => '2021-04-19 11:44:43',
+                'deleted_at' => NULL,
+            ),
+            140 => 
+            array (
+                'id' => 141,
+                'title' => 'annotation_create',
+                'created_at' => '2021-04-19 11:45:06',
+                'updated_at' => '2021-04-19 11:45:06',
+                'deleted_at' => NULL,
+            ),
         ));
         
         

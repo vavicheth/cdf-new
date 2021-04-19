@@ -352,6 +352,11 @@ class DocumentController extends Controller
                 $query->where('document_id', $document->id);
             }))
             ->orderBy('ordering', 'asc')->get();
+
+        $pdf=Pdf::loadView('admin.documents.includes.print', ['document'=>$document,'users'=>$users]);
+        return $pdf->stream('document.pdf');
+
+
 ////
 //        $pdf = App::make('dompdf.wrapper');
 ////        $pdf->loadHTML('<h1>Test</h1>');
@@ -425,6 +430,7 @@ class DocumentController extends Controller
 
     public function view_pdf(Request $request)
     {
+        abort_if(Gate::denies('annotation_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $media=Media::findOrFail($request->media_id);
         $document=Document::findOrFail($request->document_id);
 
@@ -433,47 +439,20 @@ class DocumentController extends Controller
 
     public function save_pdf(Request $request)
     {
+        abort_if(Gate::denies('annotation_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
         $file=$request->file('pdf');
-        $file->move(storage_path('tmp/uploads/'),$file->getClientOriginalName());
+        $filename='updated_'.$file->getClientOriginalName();
+        $file->move(storage_path('tmp/uploads/'),$filename);
 
-        $pdf = new \mikehaertl\pdftk\Pdf(storage_path('tmp/uploads/file.pdf'));
-        $pdf->compress('compress')->saveAs('public/new.pdf');
+        $pdf = new \mikehaertl\pdftk\Pdf(storage_path('tmp/uploads/'.$filename));
+        $pdf->compress('uncompress');
+        $pdf->compress('compress');
 
-        return $request->pdf->getClientOriginalName();
-        if ($request->hasFile('pdf')) {
+        $document=Document::findOrFail($request->document_id);
+        $document->addMedia(storage_path('tmp/uploads/' . $filename))->toMediaCollection('document_file');
 
-            $file = $request->file('pdf');
-            Storage::put($request->media_id . '/' . $request->media_file, (string)file_get_contents($file), 'public');
+        return 'File has been saved!';
 
-            //Show approved when DG comment
-            if (auth()->id() == 28) {
-                $document = Document::findOrFail($request->document_id);
-                $document->update(['submit' => '2']);
-            }
-
-            return response('Successful blog save to file!');
-        }
-        return 'End section';
-
-
-
-
-//        $path = storage_path('tmp/uploads');
-//        try {
-//            if (!file_exists($path)) {
-//                mkdir($path, 0755, true);
-//            }
-//        } catch (\Exception $e) {
-//        }
-////        $file = $request->file('file');
-//        $name = 'By_DG_test.pdf';//. trim($file->getClientOriginalName());
-////        $file->move($path, $name);
-//        file_put_contents($path.'/'.$name,$request->file('file'));
-//
-//        $document=Document::findOrFail($request->document_id);
-//        $document->addMedia(storage_path('tmp/uploads/' . $name))->toMediaCollection('document_file');
-//
-//        return view('admin.documents.annotations.index');
     }
 
 

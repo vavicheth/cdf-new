@@ -76,45 +76,10 @@
         <button class="btn btn-warning btn-sm" onclick="closeWithoutSave()"><i class="fa fa-close"></i> Close</button>
     </div>
     <div class="tool">
-        <button class="btn btn-primary btn-sm" onclick="savePDF()"><i class="fa fa-save"></i> Save and Close</button>
+        <button class="btn btn-primary btn-sm" onclick="saveAndClose()"><i class="fa fa-save"></i> Save and Close</button>
     </div>
 
-    <div class="tool">
-        <button class="btn btn-primary btn-sm" onclick="setValue()"><i class="fa fa-save"></i> Set</button>
-    </div>
 
-    <div class="tool">
-        <button class="btn btn-primary btn-sm" onclick="saveByLink()"><i class="fa fa-save"></i> Save Direct</button>
-    </div>
-
-    <div class="tool">
-        {{--        <form class="form-horizontal file-upload" method="post" enctype="multipart/form-data">--}}
-        {!! Form::open(['method' => 'POST', 'route' => ['admin.documents.save_pdf'], 'files' => true,'id'=>'form_upload']) !!}
-        {{ csrf_field() }}
-        {{--        <input type="text" name="media_id" value="{{$media->id}}" hidden>--}}
-        {{--        <input type="text" name="media_file" value="{{$media->file_name}}" hidden>--}}
-        {{--        <input type="text" name="document_id" value="{{$document->id}}" hidden>--}}
-
-        <input type="text" name="media_id" value="1" hidden>
-        <input type="text" name="media_file" value="test.pdf" hidden>
-        <input type="text" name="document_id" value="1" hidden>
-
-        <input type="file" name="pdf" id="import_file" >
-
-        <br>
-        <button class="btn btn-primary btn-sm" type="submit" id="send_data"><i class="fa fa-save"></i> submit</button>
-        {{--        </form>--}}
-        {!! Form::close() !!}
-
-        {{--        {!! Form::file('file[]', [--}}
-        {{--                        'multiple',--}}
-        {{--                        'class' => 'form-control file-upload',--}}
-        {{--                        'data-url' => route('admin.media.upload'),--}}
-        {{--                        'data-bucket' => 'file',--}}
-        {{--                        'data-filekey' => 'file',--}}
-        {{--                        'hidden'=>'true',--}}
-        {{--                        ]) !!}--}}
-    </div>
 </div>
 <div id="pdf-container"></div>
 
@@ -122,7 +87,6 @@
     <div class="modal-dialog modal-dialog-centered justify-content-center" role="document">
         <span class="fa fa-spinner fa-pulse fa-3x fa-fw" style="color: white"></span><br>
         <span id="text_state" style="color: white">Uploading</span>
-
     </div>
 </div>
 
@@ -139,26 +103,6 @@
 <script src="{{asset('js/plugins/pdfjsannotation/pdfannotate.js')}}"></script>
 
 <script>
-
-        {{--$(function () {--}}
-        {{--     // $('.file-upload').each(function () {--}}
-        {{--        var $this = $(this);--}}
-        {{--        var $parent = $(this).parent();--}}
-
-        {{--        $('.file-upload').fileupload({--}}
-        {{--            dataType: 'json',--}}
-        {{--            formData: {--}}
-        {{--                model_name: 'Document',--}}
-        {{--                bucket: $this.data('bucket'),--}}
-        {{--                file_key: $this.data('filekey'),--}}
-        {{--                _token: '{{ csrf_token() }}'--}}
-        {{--            },--}}
-        {{--            add: function (e, data) {--}}
-        {{--                data.submit();--}}
-        {{--            },--}}
-        {{--        });--}}
-
-        {{--});--}}
 
     var pdf = new PDFAnnotate('pdf-container', '{{$media->getUrl()}}', {
             onPageUpdated: (page, oldData, newData) => {
@@ -179,34 +123,12 @@
     }
 
     function saveByLink() {
-
-        var file = btoa(pdf.output());
-        $.ajax({
-            method: "POST",
-            url: "test.php",
-            data: {
-                data: file
-            },
-        }).done(function (data) {
-            console.log('Success!');
-        });
-
+        pdf.savePdf();
     }
 
-    function setValue() {
-        // var blob = btoa(pdf.output());
-        // $.ajax({
-        //     method: "POST",
-        //     url: "test.php",
-        //     data: { data: pdf },
-        // }).done(function (data) {});
+    function saveAndClose() {
 
-        // var blob = pdf.savePdfToServer();
-        // // $('#form_upload').append('<input name="pdf" id="pdf" type="file" value="'+ blob +'" />');
-        // $('#import_file').value(blob);
-        // // alert($('#pdf').value());
-
-        var blob = pdf.savePdfToServer();
+        var blob = pdf.savePdfToServer('{{$media->file_name}}');
         // var blob = pdf.serializePdf();
         var fd = new FormData();
         fd.append('pdf', blob);
@@ -235,6 +157,7 @@
                 console.log(response);
                 $("#text_state").html("Upload complete.");
                 // close();
+                window.location.href = '{{route('admin.documents.index')}}';
             },
             error: function () {
                 $("#text_state").html("Upload Error!");
@@ -329,67 +252,6 @@
 
         var formData = new FormData();
         formData.append('pdf', blob);
-        {{--formData.append('media_id', {!! json_encode($media->id) !!});--}}
-        {{--formData.append('media_file', {!! json_encode($media->file_name) !!});--}}
-        {{--formData.append('document_id', {!! json_encode($document->id) !!});--}}
-        {{--formData.append('document_id', {!! json_encode($document->id) !!});--}}
-
-
-        {{--$.ajax({--}}
-        {{--    0--}}
-        {{--    url: "{{ route('admin.documents.save_pdf') }}",--}}
-        {{--    // data:  formData,--}}
-        {{--    type: 'post',--}}
-        {{--    async: false,--}}
-        {{--    processData: false,--}}
-        {{--    // contentType: false,--}}
-        {{--    data: JSON.stringify({ pdf:blob, media_id:'{{$media->id}}', media_file: '{{$media->file_name}}', document_id:'{{$document->id}}'}),--}}
-        {{--    contentType: "application/json",--}}
-        {{--    beforeSend: function () {--}}
-        {{--        console.log('Uploading');--}}
-        {{--        modal();--}}
-        {{--        $("#text_state").html("Uploading, please wait....");--}}
-        {{--    },--}}
-        {{--    success: function () {--}}
-        {{--        console.log('Success!');--}}
-        {{--        $("#text_state").html("Upload success.");--}}
-        {{--    },--}}
-        {{--    complete: function (response) {--}}
-        {{--        console.log('Complete!');--}}
-        {{--        console.log(response);--}}
-        {{--        $("#text_state").html("Upload complete.");--}}
-        {{--        // close();--}}
-        {{--    },--}}
-        {{--    error: function () {--}}
-        {{--        $("#text_state").html("Upload Error!");--}}
-        {{--        alert("ERROR in upload");--}}
-        {{--    }--}}
-        {{--   --}}
-        {{--});--}}
-
-
-
-
-        {{--$.ajaxSetup({--}}
-        {{--    headers: {--}}
-        {{--        'X-CSRF-TOKEN': "{{ csrf_token() }}"--}}
-        {{--    }--}}
-        {{--});--}}
-        {{--$.ajax('{{ route('admin.documents.save_pdf') }}',--}}
-        {{--    {--}}
-        {{--        method: 'POST',--}}
-        {{--        data: formData,--}}
-        {{--        processData: false,--}}
-        {{--        contentType: false,--}}
-        {{--        success: function(data)--}}
-        {{--        {--}}
-        {{--            console.log(data);--}}
-        {{--            --}}{{--window.location.href = "{{ route('admin.documents.show',$document->id )}}";--}}
-        {{--            // close();--}}
-        {{--        },--}}
-        {{--        error: function(data){console.log(data)}--}}
-        {{--    });--}}
-
     }
 
     function clearPage() {
