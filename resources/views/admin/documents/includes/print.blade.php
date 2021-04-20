@@ -14,11 +14,14 @@
         .content_table {font-family: khmerosbattambang; font-size: 14px;}
         p{
             font-family: khmerosbattambang; font-size: 14px;
-            line-height: 5px;
-            /*margin: 10px 0;*/
+            /*line-height: 5px;*/
+            margin: 5px 0;
         }
         .right {
             float: right;
+        }
+        body{
+            font-family: khmerosbattambang; font-size: 13px;
         }
     </style>
 </head>
@@ -69,10 +72,10 @@
     @foreach($user->comments as $comment)
         <!-- Comment user in document -->
         <div style="margin-top: 10px">
-            <div style="float: right; width: 20%">
-                <span  class='content right' style="float: right; width: 70%"><i>{{$comment->updated_at->format('d-M-Y   H:i:s')}}</i></span><br>
+            <div style="float: right; width: 30%">
+                <span  class='content right' style="font-size:12px;float: right; width: 70%"><i>{{$comment->updated_at->format('d-M-Y   H:i:s')}}</i></span><br>
             </div>
-            <div style="width: 80%; ">
+            <div style="width: 70%; ">
                 <span class='title2 float-left'>{{$user->staff ? ($user->staff->department ? ($user->staff->department->name_kh) : '') : ''}}: &nbsp; </span>
                 <span class='content float-left'><b>{{$user->staff ? (($user->staff->title ? $user->staff->title->name_kh : '') . ' ' . $user->staff->name_kh) : ''}}៖ </b></span>
             </div>

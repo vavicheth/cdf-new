@@ -10,6 +10,7 @@ use App\Http\Requests\StoreDocumentRequest;
 use App\Http\Requests\UpdateDocumentRequest;
 use App\Mail\DocumentMail;
 use App\Models\Category;
+use App\Models\Comment;
 use App\Models\Document;
 use App\Models\DocumentType;
 use App\Models\Organisation;
@@ -450,6 +451,11 @@ class DocumentController extends Controller
 
         $document=Document::findOrFail($request->document_id);
         $document->addMedia(storage_path('tmp/uploads/' . $filename))->toMediaCollection('document_file');
+
+        $cm=$document->documentComments()->where('user_id',auth()->id())->count();
+        if ($cm < 1) {
+            $comment = Comment::create(['document_id'=>$request->document_id,'user_id'=>auth()->id(),'comment'=>'យោបល់លើឯកសារ']);
+        }
 
         return 'File has been saved!';
 
