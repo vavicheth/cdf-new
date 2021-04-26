@@ -76,6 +76,9 @@
         <button class="btn btn-warning btn-sm" onclick="closeWithoutSave()"><i class="fa fa-close"></i> Close</button>
     </div>
     <div class="tool">
+        <button class="btn btn-primary btn-sm" onclick="saveByJson()"><i class="fa fa-save"></i> Save By Json</button>
+    </div>
+    <div class="tool">
         <button class="btn btn-primary btn-sm" onclick="saveAndClose()"><i class="fa fa-save"></i> Save and Close</button>
     </div>
 
@@ -122,8 +125,43 @@
         // }, 3000);
     }
 
-    function saveByLink() {
-        pdf.savePdf();
+    function saveByJson() {
+        {{--var blob = pdf.savePdfToServer('{{$media->file_name}}');--}}
+        var blob = pdf.serializePdf();
+        var fd = new FormData();
+        fd.append('pdf', blob);
+        fd.append('media_id', {!! json_encode($media->id) !!});
+        fd.append('media_file', {!! json_encode($media->file_name) !!});
+        fd.append('document_id', {!! json_encode($document->id) !!});
+        $.ajax({
+            headers: { 'X-CSRF-TOKEN': "{{ csrf_token() }}" },
+            url: '{{ route('admin.documents.save_pdf') }}',
+            type: 'POST',
+            cache: false,
+            data: fd,
+            processData: false,
+            contentType: false,
+            beforeSend: function () {
+                console.log('Uploading');
+                modal();
+                $("#text_state").html("Uploading, please wait....");
+            },
+            success: function () {
+                console.log('Success!');
+                $("#text_state").html("Upload success.");
+            },
+            complete: function (response) {
+                console.log('Complete!');
+                console.log(response);
+                $("#text_state").html("Upload complete.");
+                // close();
+                {{--window.location.href = '{{route('admin.documents.show',$document_id)}}';--}}
+            },
+            error: function () {
+                $("#text_state").html("Upload Error!");
+                alert("ERROR in upload");
+            }
+        });
     }
 
     function saveAndClose() {
@@ -157,7 +195,7 @@
                 console.log(response);
                 $("#text_state").html("Upload complete.");
                 // close();
-                window.location.href = '{{route('admin.documents.index')}}';
+                window.location.href = '{{route('admin.documents.show',$document->id)}}';
             },
             error: function () {
                 $("#text_state").html("Upload Error!");

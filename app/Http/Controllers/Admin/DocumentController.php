@@ -22,6 +22,7 @@ use Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
@@ -435,12 +436,21 @@ class DocumentController extends Controller
         $media=Media::findOrFail($request->media_id);
         $document=Document::findOrFail($request->document_id);
 
-        return view('admin.documents.annotations.index',compact('media','document'));
+        return view('admin.documents.annotations.index_pspdfkit',compact('media','document'));
+//        return view('admin.documents.annotations.index',compact('media','document'));
     }
 
     public function save_pdf(Request $request)
     {
         abort_if(Gate::denies('annotation_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+//        $responseData = json_decode($request->keys('pdf'), TRUE);
+        $base64img = str_replace('data:application/pdf;base64,', '', $request['pdf']);
+        $data = base64_decode($base64img);
+//        $data = base64_decode($request['pdf']);
+        Storage::put('public/test.pdf', $data);
+
+        return 'ok';
+
         $file=$request->file('pdf');
         $filename='updated_'.$file->getClientOriginalName();
         $file->move(storage_path('tmp/uploads/'),$filename);
