@@ -1,4 +1,9 @@
 @extends('layouts.admin')
+
+@section('style')
+    <link href="{{asset('js/plugins/select2-4.0/select2.min.css')}}" rel="stylesheet" />
+@endsection
+
 @section('content')
 
 <div class="card">
@@ -85,7 +90,7 @@
 {{--                        <option value="{{ $id }}" {{ (in_array($id, old('users', [])) || $document->users->contains($id)) ? 'selected' : '' }}>{{ $user }}</option>--}}
 {{--                    @endforeach--}}
 {{--                </select>--}}
-                {!! Form::select('users[]', $users, $users_doc, ['class' => 'form-control select2', 'id'=>'users','multiple'=>'true']) !!}
+                {!! Form::select('users[]', $users, [], ['class' => 'form-control select2', 'id'=>'users','multiple'=>'true']) !!}
                 @if($errors->has('users'))
                     <span class="text-danger">{{ $errors->first('users') }}</span>
                 @endif
@@ -182,28 +187,60 @@
 @endsection
 
 @section('scripts')
+    <script src="{{asset('js/plugins/select2-4.0/select2.min.js')}}"></script>
 <script>
     $('#document_code').inputmask("99-99-9999");
     $(document).ready(function(){
+
+        // $("#users").select2({tags: []});
+        // $("#users").on("change", function() { $("#users_val").html($("#users").val());});
+        //
+        // $("#users").select2("container").find("ul.select2-choices").sortable({
+        //     containment: 'parent',
+        //     start: function() { $("#users").select2("onSortStart"); },
+        //     update: function() { $("#users").select2("onSortEnd"); }
+        // });
+
+        // $("#users").select2({tags: ['test','speed']});
+
+        $("#users").val({{$users_doc->pluck('id')}}).select2();
+        $("#users").trigger('change');
+
+
         $("#users").on("select2:select", function (evt) {
             var element = evt.params.data.element;
             var $element = $(element);
 
-            window.setTimeout(function () {
-                if ($("#users").find(":selected").length > 1) {
-                    var $second = $("#users").find(":selected").eq(-2);
-                    $element.detach();
-                    $second.after($element);
-                }
-                else {
-                    $element.detach();
-                    $("#users").prepend($element);
-                }
-
-                $("#users").trigger("change");
-            }, 1);
-
+            $element.detach();
+            $(this).append($element);
+            $(this).trigger("change");
         });
+
+        // $("#users").select2("container").find("ul.select2-choices").sortable({
+        //     containment: 'parent',
+        //     start: function() { $("#e15").select2("onSortStart"); },
+        //     update: function() { $("#e15").select2("onSortEnd"); }
+        // });
+
+        // $("#users").on("select2:select", function (evt) {
+        //     var element = evt.params.data.element;
+        //     var $element = $(element);
+        //
+        //     window.setTimeout(function () {
+        //         if ($("#users").find(":selected").length > 1) {
+        //             var $second = $("#users").find(":selected").eq(-2);
+        //             $element.detach();
+        //             $second.after($element);
+        //         }
+        //         else {
+        //             $element.detach();
+        //             $("#users").prepend($element);
+        //         }
+        //
+        //         $("#users").trigger("change");
+        //     }, 1);
+        //
+        // });
 
     });
 

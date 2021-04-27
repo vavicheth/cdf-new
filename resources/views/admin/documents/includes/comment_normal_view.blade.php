@@ -22,6 +22,7 @@
                             @if ($user->comments->count() < 1)
                                 @include('admin.documents.includes.chat_waiting')
                             @else
+                                @if ($users->whereIn('id',auth()->id() )->count() > 0 || auth()->user()->can('comment_grand_access'))
                                     @foreach($user->comments as $comment)
                                     <!-- Comment user in document -->
                                         <div class="direct-chat-text">
@@ -36,6 +37,9 @@
 
                                         @include('admin.documents.includes.modal')
                                     @endforeach
+                                @else
+                                    @include('admin.documents.includes.chat_check')
+                                @endif
                             @endif
                         </div>
                         <!-- /.direct-chat-msg -->

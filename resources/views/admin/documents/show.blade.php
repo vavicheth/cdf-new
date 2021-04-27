@@ -95,7 +95,7 @@
                             {{ trans('cruds.document.fields.user') }}
                         </th>
                         <td>
-                            @foreach($document->users as $key => $user)
+                            @foreach($users as $user)
                                 <span class="badge badge-info">{{ $user->name }}</span><br>
                             @endforeach
                         </td>

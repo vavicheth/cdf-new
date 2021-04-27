@@ -242,17 +242,22 @@ class DocumentController extends Controller
         $organisations = Organisation::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $users = User::all()->pluck('name', 'id');
+//        $users = User::all();
         $users_doc=$document->users()
             ->with(array('comments' => function($query) use ($document)
             {
                 $query->where('document_id', $document->id);
             }))
             ->orderBy('ordering', 'asc')->get();
+//        $users=User::whereNotIn('id',$users_doc->pluck('id') )->pluck('name', 'id');
 
         $document_types = DocumentType::all()->pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         $document->load('category', 'organisation', 'users', 'document_type');
 
+//        return  $users_doc->pluck('id');
+
+//        return view('admin.documents.edit_test', compact('categories', 'organisations', 'users', 'document_types', 'document', 'users_doc'));
         return view('admin.documents.edit', compact('categories', 'organisations', 'users', 'document_types', 'document', 'users_doc'));
     }
 
@@ -272,6 +277,7 @@ class DocumentController extends Controller
             ->map(function ($user){
                 return ['ordering'=>$user];
             });
+        $document->users()->detach();
         $document->users()->sync($users);
 
         //delete comment that has edit user not in new list
