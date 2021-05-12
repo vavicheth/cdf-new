@@ -201,6 +201,8 @@
             @include('admin.documents.includes.comment_status_view')
         @elseif ($document->getType() == 'inheritance_view')
             @include('admin.documents.includes.comment_inheritance_view')
+        @elseif ($document->getType() == 'public_view')
+            @include('admin.documents.includes.comment_public_view')
         @endif
     @endif
 @endif
